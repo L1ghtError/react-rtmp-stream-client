@@ -21,7 +21,7 @@ function StreamInfo() {
           onClick={() => {
             document.dispatchEvent(toggleVideoPlay);
           }}>
-          toggle wideo player
+          Toggle wideo player
         </button>
       </section>
       <section>
