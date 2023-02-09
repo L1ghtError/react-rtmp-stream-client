@@ -9,8 +9,11 @@ function StreamInfo() {
   return (
     <StreamInfoStyled>
       <section>
-        <div id="avatar-wapper">
-          <img id="user-avatar" src={userAvatar} alt="Logo"></img>
+        <div id="avatar-wrapper">
+          <div id="avatar-background">
+            {/* TODO: implement background size increase on hover */}
+            <img id="user-avatar" src={userAvatar} alt="Logo"></img>
+          </div>
         </div>
         <p id="user-name">{'Young thug '}</p>
         <p id="stream-name"> | My stream</p>
@@ -40,8 +43,11 @@ const increaseAvatarWrapperSize = keyframes`
   0%{
     transform: scale(1);
   }
+  50%{
+    transform: scale(1.2);
+  }
   100%{
-    transform: scale(0);
+    transform: scale(1);
   }
 `;
 
@@ -70,20 +76,31 @@ const StreamInfoStyled = styled.div`
     align-items: center;
   }
   #user-avatar {
+    position: absolute;
     width: 2.5rem;
     border-radius: 200px 200px 200px 200px;
   }
-  #avatar-wapper {
+  #avatar-wrapper {
     display: flex;
     margin-left: 20px;
     justify-content: center;
     align-items: center;
     width: 2.8rem;
     height: 2.8rem;
+  }
+  #avatar-background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #avatar-background {
+    width: 100%;
+    height: 100%;
     border-radius: 200px 200px 200px 200px;
     background-color: #4b4b4b;
   }
-  #avatar-wapper :hover {
+  #avatar-background :hover {
     //animation: ${increaseAvatarWrapperSize} 0.2s forwards;
   }
   #settings-button-logo-wrapper {

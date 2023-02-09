@@ -13,6 +13,8 @@ const AppStyled = styled.div`
 function App() {
   return (
     <AppStyled className="App">
+      {' '}
+      {/*TODO: implement global styles instead of index,css */}
       <AppHeader></AppHeader>
       <MainContent></MainContent>
       <AdditionalInfo></AdditionalInfo>

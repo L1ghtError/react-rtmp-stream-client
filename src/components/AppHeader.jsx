@@ -13,7 +13,7 @@ function AppHeader() {
       </div>
       <div id="right-part-navigation">
         <button>Main</button>
-        <button>Options</button>
+        <button>Options</button> {/*TODO: Implement options route */}
       </div>
     </AppHeaderStyled>
   );

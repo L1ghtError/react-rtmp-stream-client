@@ -41,7 +41,8 @@ function VideoPlayer() {
 
   return (
     <VideoPlayerStyled>
-      <video id="videoElement" ref={videoPlayerRef}></video>
+      <video id="videoElement" ref={videoPlayerRef}></video>{' '}
+      {/*TODO: integrate inputs inside video tag */}
     </VideoPlayerStyled>
   );
 }
