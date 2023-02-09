@@ -2,6 +2,7 @@
 import styled from 'styled-components';
 import reduxLogo from '../assets/redux.svg';
 import reactLogo from '../assets/react.svg';
+import { redirect, Link } from 'react-router-dom';
 
 function AppHeader() {
   return (
@@ -12,8 +13,17 @@ function AppHeader() {
         <p>RTMP stream client</p>
       </div>
       <div id="right-part-navigation">
-        <button>Main</button>
-        <button>Options</button> {/*TODO: Implement options route */}
+        <Link to={'/'}>
+          <button
+            onClick={() => {
+              redirect('/');
+            }}>
+            Main
+          </button>
+        </Link>
+        <Link to={'/options'}>
+          <button>Options</button> {/*TODO: Implement options route */}
+        </Link>
       </div>
     </AppHeaderStyled>
   );
@@ -27,6 +37,7 @@ const AppHeaderStyled = styled.div`
   align-items: center;
   background-color: #18181b;
   justify-content: space-between;
+
   & div {
     display: flex;
     width: 100%;

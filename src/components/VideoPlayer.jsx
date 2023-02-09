@@ -19,12 +19,13 @@ function VideoPlayer() {
     flvPlayer = flv.createPlayer({
       type: 'flv',
       url: 'http://localhost:8000/live/test.flv'
-    });
+    }); //TODO: remove logging
 
     flvPlayer.attachMediaElement(videoPlayerRef.current);
     flvPlayer.load();
     return () => {
-      flvPlayer.unload(); //Chek is it realy stops receiving video stream
+      flvPlayer.unload();
+      flvPlayer.detachMediaElement();
     };
   }, []);
 
