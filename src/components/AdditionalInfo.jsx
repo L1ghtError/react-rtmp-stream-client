@@ -6,7 +6,8 @@ const AdditionalInfoStyled = styled.div`
   display: flex;
   margin-top: 3rem;
   background-color: #333333;
-  width: 50rem;
+  width: 55%;
+  min-width: 20rem;
   min-height: 8rem;
   border-radius: 23px;
   justify-content: space-between;

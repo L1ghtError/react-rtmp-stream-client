@@ -1,20 +1,15 @@
 //import { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
-import userAvatar from '../assets/Blackbox.png';
+import styled from 'styled-components';
 
 import settingButtonLogo from '../assets/SettingButton.svg';
+import UserAvatar from './micro-components/UserAvatar';
 
 function StreamInfo() {
   const toggleVideoPlay = new Event('toggleVideoPlay');
   return (
     <StreamInfoStyled>
       <section>
-        <div id="avatar-wrapper">
-          <div id="avatar-background">
-            {/* TODO: implement background size increase on hover */}
-            <img id="user-avatar" src={userAvatar} alt="Logo"></img>
-          </div>
-        </div>
+        <UserAvatar></UserAvatar>
         <p id="user-name">{'Young thug '}</p>
         <p id="stream-name"> | My stream</p>
         <button
@@ -39,18 +34,6 @@ function StreamInfo() {
 }
 export default StreamInfo;
 
-const increaseAvatarWrapperSize = keyframes`
-  0%{
-    transform: scale(1);
-  }
-  50%{
-    transform: scale(1.2);
-  }
-  100%{
-    transform: scale(1);
-  }
-`;
-
 const StreamInfoStyled = styled.div`
   display: flex;
   width: 100%;
@@ -60,6 +43,10 @@ const StreamInfoStyled = styled.div`
   border-radius: 0px 0px 20px 20px;
   align-items: center;
   justify-content: space-between;
+
+  #user-avatar-component {
+    margin-left: 20px;
+  }
 
   & button {
     margin-left: 1rem;
@@ -75,34 +62,7 @@ const StreamInfoStyled = styled.div`
     display: flex;
     align-items: center;
   }
-  #user-avatar {
-    position: absolute;
-    width: 2.5rem;
-    border-radius: 200px 200px 200px 200px;
-  }
-  #avatar-wrapper {
-    display: flex;
-    margin-left: 20px;
-    justify-content: center;
-    align-items: center;
-    width: 2.8rem;
-    height: 2.8rem;
-  }
-  #avatar-background {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
 
-  #avatar-background {
-    width: 100%;
-    height: 100%;
-    border-radius: 200px 200px 200px 200px;
-    background-color: #4b4b4b;
-  }
-  #avatar-background :hover {
-    //animation: ${increaseAvatarWrapperSize} 0.2s forwards;
-  }
   #settings-button-logo-wrapper {
     display: flex;
     align-items: center;
