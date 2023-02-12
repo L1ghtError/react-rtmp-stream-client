@@ -2,7 +2,7 @@
 import styled, { keyframes } from 'styled-components';
 // eslint-disable-next-line no-unused-vars
 import PropTypes from 'prop-types';
-
+import twitchIcon from '../../assets/SocialMediaSVGS/twitch-icon.svg';
 //Picture Profile Settings
 export default function ProfileSettingsCard() {
   return (
@@ -38,7 +38,11 @@ export default function ProfileSettingsCard() {
           <input id="stream-key-input" value="#A92C2C" type={'color'}></input>
           <h5>set your color theme</h5>
         </div>
-
+        <div id="twitch-auth-wrapper" className="card-settings-wrapper">
+          <p>Sync with twich</p>
+          <button id="stream-key-display-button">Auth with Twitch!</button>
+          <img src={twitchIcon}></img>
+        </div>
         <div id="profile-settings-save-button-wrapper" className="card-settings-wrapper">
           <button>Save changes</button>
         </div>
@@ -73,8 +77,8 @@ const ProfileSettingsCardStyled = styled.div`
     margin-right: 1rem;
   }
   #stream-key-display-button {
-    width: 15%;
-    padding-right: 7rem;
+    width: auto;
+    padding-right: 4rem;
     margin-left: 0px;
     font-size: 0.8rem;
   }
@@ -145,6 +149,24 @@ const ProfileSettingsCardStyled = styled.div`
     & button:focus,
     button:focus-visible {
       outline: 3px solid #393940;
+    }
+  }
+  #twitch-auth-wrapper {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    & img {
+      width: 2.2rem;
+      margin-right: 5rem;
+      filter: drop-shadow(0px 4px 2px rgba(0, 0, 0, 0.25));
+    }
+    & button {
+      padding-right: 6rem;
+      padding-left: 4rem;
+    }
+    & p {
+      margin-left: 1rem;
     }
   }
 `;

@@ -8,6 +8,8 @@ const OptionsPageStyled = styled.div`
   width: 50rem;
   background-color: rgba(166, 166, 166, 0.2);
   margin-top: 3rem;
+  max-height: 86vh;
+  overflow: auto;
   #options-main {
     display: flex;
     flex-direction: column;

@@ -34,7 +34,6 @@ const UserAvatarStyled = styled.div`
   align-items: center;
   width: ${(props) => props.photoSize || '2.8'}rem; //2.8rem
   height: ${(props) => props.photoSize || '2.8'}rem; //2.8rem
-
   #avatar-background {
     display: flex;
     justify-content: center;
@@ -42,9 +41,18 @@ const UserAvatarStyled = styled.div`
     align-items: center;
     width: 100%;
     height: 100%;
+
     border-radius: 100px 100px 100px 100px;
     background-color: #4b4b4b;
+    transition: background-color 0.25s;
   }
+
+  #avatar-background:hover {
+    background-color: var(--theme-user-color);
+    width: 95%;
+    height: 95%;
+  }
+
   #user-avatar {
     width: 90%;
     border-radius: 100px 100px 100px 100px;
