@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 // eslint-disable-next-line no-unused-vars
 import styled, { keyframes } from 'styled-components';
 // eslint-disable-next-line no-unused-vars
@@ -5,11 +6,27 @@ import PropTypes from 'prop-types';
 import UserAvatar from './UserAvatar';
 //Picture Profile Settings
 export default function ProfilePictureSettings() {
+  const inputRef = useRef(null);
+  const handleInputChange = (e) => {
+    console.log(inputRef.current.files);
+    Event.preventDefault();
+  };
   return (
     <ProfilePictureSettingsStyled>
       <UserAvatar photoSize={5}></UserAvatar>
       <div>
-        <button>Load Profile Picture</button>
+        <button>
+          <label htmlFor="load-picture-input">Load Profile Picture</label>
+
+          <input
+            onChange={handleInputChange}
+            id="load-picture-input"
+            name="load-picture-input"
+            accept=".jpg, .jpeg, .png"
+            ref={inputRef}
+            type={'file'}></input>
+        </button>
+
         <p>Must be JPEG, PNG, or GIF</p>
       </div>
     </ProfilePictureSettingsStyled>
@@ -29,11 +46,19 @@ const ProfilePictureSettingsStyled = styled.div`
   & #user-avatar-component {
     margin-left: 1rem;
   }
+
+  #load-picture-input {
+    position: absolute;
+    opacity: 0;
+    background-color: red;
+  }
+
   & button {
+    display: flex;
     border-radius: 5px;
     margin-left: 1rem;
     margin-top: 1rem;
-
+    padding: 0px;
     width: 15rem;
     background-color: #393940;
   }
@@ -41,6 +66,12 @@ const ProfilePictureSettingsStyled = styled.div`
   & p {
     margin-left: 1rem;
     font-size: 0.9rem;
+  }
+
+  & label {
+    width: 100%;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 `;
 
