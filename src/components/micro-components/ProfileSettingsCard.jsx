@@ -7,28 +7,45 @@ import { useImmer } from 'use-immer';
 import { useState } from 'react';
 //Picture Profile Settings
 export default function ProfileSettingsCard() {
-  const [userInfo, setUserInfo] = useImmer({ userNmae: '', streamName: '', userStreamKey: '' });
-  const [isDisplayStreamKey, setDisplayStreamKey] = useState(1);
+  const [userInfo, setUserInfo] = useImmer({
+    userName: '',
+    streamName: '',
+    userStreamKey: '',
+    userColorTheme: '#535bf2'
+  });
+  const [isDisplayStreamKey, setDisplayStreamKey] = useState(0);
   const handleUserNameChange = (e) => {
     setUserInfo((draft) => {
-      draft.userNmae = e.value;
+      draft.userName = e.target.value;
     });
   };
 
+  const handleUserColorThemeChange = (e) => {
+    setUserInfo((draft) => {
+      draft.userColorTheme = e.target.value;
+    });
+  };
   const handleStreamNameChange = (e) => {
     setUserInfo((draft) => {
-      draft.streamName = e.value;
+      draft.streamName = e.target.value;
     });
   };
   const handleStreamKeyChange = (e) => {
     setUserInfo((draft) => {
-      draft.userStreamKey = e.value;
+      draft.userStreamKey = e.target.value;
     });
   };
   const displayStreamKey = (isDisplayStreamKey) => {
-    if (isDisplayStreamKey) {
+    if (isDisplayStreamKey === 1) {
       return userInfo.userStreamKey;
-    } else return 'blank';
+    }
+    if (isDisplayStreamKey === 0) {
+      let output = '';
+      for (let i = 0; i < userInfo.userStreamKey.length; i++) {
+        output += '*';
+      }
+      return output;
+    }
   };
 
   return (
@@ -37,38 +54,49 @@ export default function ProfileSettingsCard() {
         <div className="card-settings-wrapper">
           <div className="text-card-wrapper">
             <p>Username</p>
-            <h5>specify username / change username / username : {`{useranme}`}</h5>
+            <h5>
+              {userInfo.userName == '' ? 'Specify username' : `Username: ${userInfo.userName}`}
+            </h5>
           </div>
           <input
-            value={userInfo.userNmae}
-            onChange={handleUserNameChange}
-            maxLength={128}
+            value={userInfo.userName}
+            onChange={(e) => handleUserNameChange(e)}
+            maxLength={32}
             placeholder="Username"></input>
         </div>
         <div className="card-settings-wrapper">
           <div className="text-card-wrapper">
             <p>Stream name</p>
-            <h5>specify stream name...</h5>
+            <h5>
+              {userInfo.streamName == ''
+                ? 'Specify stream name...'
+                : `Stream name: ${userInfo.streamName}`}
+            </h5>
           </div>
           <input
             value={userInfo.streamName}
             onChange={handleStreamNameChange}
-            maxLength={128}
+            maxLength={64}
             placeholder="Stream name"></input>
         </div>
         <div className="card-settings-wrapper">
           <div className="text-card-wrapper">
             <p>Stream key</p>
-            <h5>that your private stream key (dont show it to anyone)</h5>
+            <h5>
+              That your private stream key <h5 id="warning-p">(dont show it to anyone)</h5>
+            </h5>
           </div>
           <div>
-            <input
-              value={displayStreamKey(isDisplayStreamKey)}
-              onChange={handleStreamKeyChange}
-              id="stream-key-input"
-              maxLength={128}
-              placeholder="Stream key"></input>
-            {/*IMPORTANT TODO: add *** when you type key */}
+            <label id="stream-key-label" htmlFor="stream-key-input">
+              {userInfo.userStreamKey ? displayStreamKey(isDisplayStreamKey) : 'stream key'}
+              <input
+                value={userInfo.userStreamKey}
+                onChange={handleStreamKeyChange}
+                name="stream-key-input"
+                id="stream-key-input"
+                maxLength={64}
+                placeholder="Stream key"></input>
+            </label>
             <button
               onClick={() => {
                 isDisplayStreamKey ? setDisplayStreamKey(0) : setDisplayStreamKey(1);
@@ -79,9 +107,25 @@ export default function ProfileSettingsCard() {
           </div>
         </div>
         <div id="card-color-wrapper" className="card-settings-wrapper">
-          <p>User color theme</p>
-          <input id="stream-key-input" value="#A92C2C" onChange={() => {}} type={'color'}></input>
-          <h5>set your color theme</h5>
+          <div>
+            <p>User color theme</p>
+            <input
+              id="user-color-input"
+              value={userInfo.userColorTheme}
+              onChange={handleUserColorThemeChange}
+              type={'color'}></input>
+            <h5>set your color theme</h5>
+          </div>
+          <button
+            style={{ marginLeft: '1rem' }}
+            onClick={() => {
+              setUserInfo((draft) => {
+                draft.userColorTheme = '#535bf2';
+              });
+            }}
+            id="stream-key-display-button">
+            Set to default
+          </button>
         </div>
         <div id="twitch-auth-wrapper" className="card-settings-wrapper">
           <p>Sync with twich</p>
@@ -117,22 +161,33 @@ const ProfileSettingsCardStyled = styled.div`
   }
 
   #stream-key-input {
-    width: 70%;
-
-    margin-right: 1rem;
+    position: relative;
+    opacity: 0;
+    height: 0px;
+    padding: 0px;
+    margin: 0px;
+    background-color: red;
   }
   #stream-key-display-button {
     width: auto;
     padding-right: 4rem;
     margin-left: 0px;
+    margin-right: 1rem;
     font-size: 0.8rem;
+    right: 0;
   }
   .text-card-wrapper {
     font-size: 0.7rem;
     display: flex;
     flex-direction: row;
   }
-
+  #warning-p {
+    display: inline-block;
+    color: red;
+    margin-top: 0px;
+    margin-left: 0px;
+    font-size: 16px;
+  }
   & input {
     background: #44444d;
     border-radius: 5px;
@@ -146,6 +201,12 @@ const ProfileSettingsCardStyled = styled.div`
   #card-color-wrapper {
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
+    & div {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
 
     & input {
       justify-content: center;
@@ -155,12 +216,29 @@ const ProfileSettingsCardStyled = styled.div`
       padding-left: 0rem;
     }
   }
-
+  #stream-key-label {
+    display: inline-block;
+    background: #44444d;
+    border-radius: 5px;
+    margin: 0rem 2rem 1rem 1.4rem;
+    padding: 0.4rem 1rem 0.4rem 1rem;
+    font-size: 0.7rem;
+    width: 70%;
+  }
+  #stream-key-label:hover {
+    cursor: text;
+    outline: 1px solid white;
+  }
+  #stream-key-label:focus,
+  #stream-key-label:active,
+  #stream-key-label:active {
+    outline: 1px solid white;
+  }
   h5 {
     margin-top: 1rem;
     margin-left: 1rem;
-
     font-weight: 400;
+    margin-bottom: 0px;
   }
   & button {
     border-radius: 5px;
