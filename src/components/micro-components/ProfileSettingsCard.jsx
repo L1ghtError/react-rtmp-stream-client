@@ -3,8 +3,34 @@ import styled, { keyframes } from 'styled-components';
 // eslint-disable-next-line no-unused-vars
 import PropTypes from 'prop-types';
 import twitchIcon from '../../assets/SocialMediaSVGS/twitch-icon.svg';
+import { useImmer } from 'use-immer';
+import { useState } from 'react';
 //Picture Profile Settings
 export default function ProfileSettingsCard() {
+  const [userInfo, setUserInfo] = useImmer({ userNmae: '', streamName: '', userStreamKey: '' });
+  const [isDisplayStreamKey, setDisplayStreamKey] = useState(1);
+  const handleUserNameChange = (e) => {
+    setUserInfo((draft) => {
+      draft.userNmae = e.value;
+    });
+  };
+
+  const handleStreamNameChange = (e) => {
+    setUserInfo((draft) => {
+      draft.streamName = e.value;
+    });
+  };
+  const handleStreamKeyChange = (e) => {
+    setUserInfo((draft) => {
+      draft.userStreamKey = e.value;
+    });
+  };
+  const displayStreamKey = (isDisplayStreamKey) => {
+    if (isDisplayStreamKey) {
+      return userInfo.userStreamKey;
+    } else return 'blank';
+  };
+
   return (
     <>
       <ProfileSettingsCardStyled>
@@ -13,14 +39,22 @@ export default function ProfileSettingsCard() {
             <p>Username</p>
             <h5>specify username / change username / username : {`{useranme}`}</h5>
           </div>
-          <input maxLength={128} placeholder="Username"></input>
+          <input
+            value={userInfo.userNmae}
+            onChange={handleUserNameChange}
+            maxLength={128}
+            placeholder="Username"></input>
         </div>
         <div className="card-settings-wrapper">
           <div className="text-card-wrapper">
             <p>Stream name</p>
             <h5>specify stream name...</h5>
           </div>
-          <input maxLength={128} placeholder="Stream name"></input>
+          <input
+            value={userInfo.streamName}
+            onChange={handleStreamNameChange}
+            maxLength={128}
+            placeholder="Stream name"></input>
         </div>
         <div className="card-settings-wrapper">
           <div className="text-card-wrapper">
@@ -28,14 +62,25 @@ export default function ProfileSettingsCard() {
             <h5>that your private stream key (dont show it to anyone)</h5>
           </div>
           <div>
-            <input id="stream-key-input" maxLength={128} placeholder="Stream name"></input>
+            <input
+              value={displayStreamKey(isDisplayStreamKey)}
+              onChange={handleStreamKeyChange}
+              id="stream-key-input"
+              maxLength={128}
+              placeholder="Stream key"></input>
             {/*IMPORTANT TODO: add *** when you type key */}
-            <button id="stream-key-display-button">Show</button>
+            <button
+              onClick={() => {
+                isDisplayStreamKey ? setDisplayStreamKey(0) : setDisplayStreamKey(1);
+              }}
+              id="stream-key-display-button">
+              Show
+            </button>
           </div>
         </div>
         <div id="card-color-wrapper" className="card-settings-wrapper">
           <p>User color theme</p>
-          <input id="stream-key-input" value="#A92C2C" type={'color'}></input>
+          <input id="stream-key-input" value="#A92C2C" onChange={() => {}} type={'color'}></input>
           <h5>set your color theme</h5>
         </div>
         <div id="twitch-auth-wrapper" className="card-settings-wrapper">
