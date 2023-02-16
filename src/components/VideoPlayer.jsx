@@ -4,6 +4,7 @@ import flv from 'flv.js';
 const VideoPlayerStyled = styled.div`
   display: flex;
   justify-content: center;
+  margin-top: 4rem;
   box-shadow: 0px 0px 40px -20px black;
   & video {
     width: 100%;

@@ -3,17 +3,25 @@ import styled, { keyframes } from 'styled-components';
 // eslint-disable-next-line no-unused-vars
 import PropTypes from 'prop-types';
 import twitchIcon from '../../assets/SocialMediaSVGS/twitch-icon.svg';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserInfo as reduxSetUserInfo, selectUserInfo } from '../../store/UserStore';
 import { useImmer } from 'use-immer';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 //Picture Profile Settings
 export default function ProfileSettingsCard() {
+  const dispatch = useDispatch();
   const [userInfo, setUserInfo] = useImmer({
     userName: '',
     streamName: '',
     userStreamKey: '',
     userColorTheme: '#535bf2'
   });
+  const [errorMessage, setErrorMessage] = useState('');
   const [isDisplayStreamKey, setDisplayStreamKey] = useState(0);
+  let posts = useSelector(selectUserInfo);
+  useEffect(() => {
+    setUserInfo(posts);
+  }, []);
   const handleUserNameChange = (e) => {
     setUserInfo((draft) => {
       draft.userName = e.target.value;
@@ -47,7 +55,24 @@ export default function ProfileSettingsCard() {
       return output;
     }
   };
-
+  const handleSubmit = (userInfo) => {
+    //Im know about "Formik" and "react Forms"
+    let isInvalidParamFound = 0;
+    let errorMessage = '';
+    Object.entries(userInfo).forEach((e) => {
+      if (e[1] === '') {
+        errorMessage += ' ' + e[0];
+        isInvalidParamFound = 1;
+      }
+    });
+    if (isInvalidParamFound) {
+      setErrorMessage('please specify:' + errorMessage);
+    }
+    if (isInvalidParamFound === 0) {
+      setErrorMessage('');
+      dispatch(reduxSetUserInfo(userInfo));
+    }
+  };
   return (
     <>
       <ProfileSettingsCardStyled>
@@ -83,7 +108,7 @@ export default function ProfileSettingsCard() {
           <div className="text-card-wrapper">
             <p>Stream key</p>
             <h5>
-              That your private stream key <h5 id="warning-p">(dont show it to anyone)</h5>
+              That your private stream key <div id="warning-p">(dont show it to anyone)</div>
             </h5>
           </div>
           <div>
@@ -129,11 +154,20 @@ export default function ProfileSettingsCard() {
         </div>
         <div id="twitch-auth-wrapper" className="card-settings-wrapper">
           <p>Sync with twich</p>
-          <button id="stream-key-display-button">Auth with Twitch!</button>
+          <button id="stream-key-display-button" disabled>
+            soon...{/* Auth with Twitch! */}
+          </button>
           <img src={twitchIcon}></img>
         </div>
         <div id="profile-settings-save-button-wrapper" className="card-settings-wrapper">
-          <button>Save changes</button>
+          {errorMessage ? (
+            <div id="warning-p" style={{ alignSelf: 'center' }}>
+              {errorMessage}
+            </div>
+          ) : (
+            <div></div>
+          )}
+          <button onClick={() => handleSubmit(userInfo)}>Save changes</button>
         </div>
       </ProfileSettingsCardStyled>
     </>
@@ -255,6 +289,7 @@ const ProfileSettingsCardStyled = styled.div`
 
   #profile-settings-save-button-wrapper {
     align-items: flex-end;
+
     justify-content: center;
     height: 3.5rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0);
