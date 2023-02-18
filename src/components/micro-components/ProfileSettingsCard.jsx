@@ -4,7 +4,7 @@ import styled, { keyframes } from 'styled-components';
 import PropTypes from 'prop-types';
 import twitchIcon from '../../assets/SocialMediaSVGS/twitch-icon.svg';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUserInfo as reduxSetUserInfo, selectUserInfo } from '../../store/UserStore';
+import { setUserInfo as reduxSetUserInfo, selectUserInfo } from '../../store/UserSlice';
 import { useImmer } from 'use-immer';
 import { useState, useEffect } from 'react';
 //Picture Profile Settings
@@ -101,7 +101,7 @@ export default function ProfileSettingsCard() {
           <input
             value={userInfo.streamName}
             onChange={handleStreamNameChange}
-            maxLength={64}
+            maxLength={54}
             placeholder="Stream name"></input>
         </div>
         <div className="card-settings-wrapper">
@@ -120,7 +120,8 @@ export default function ProfileSettingsCard() {
                 name="stream-key-input"
                 id="stream-key-input"
                 maxLength={64}
-                placeholder="Stream key"></input>
+                placeholder="Stream key"
+                autoComplete="off"></input>
             </label>
             <button
               onClick={() => {
@@ -195,7 +196,7 @@ const ProfileSettingsCardStyled = styled.div`
   }
 
   #stream-key-input {
-    position: relative;
+    position: absolute;
     opacity: 0;
     height: 0px;
     padding: 0px;

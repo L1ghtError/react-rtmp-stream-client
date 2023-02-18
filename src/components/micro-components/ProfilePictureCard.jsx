@@ -1,11 +1,12 @@
 import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUserPhotoThunk } from '../../store/UserStore';
+import { setUserPhotoThunk } from '../../store/UserSlice';
 // eslint-disable-next-line no-unused-vars
 import styled, { keyframes } from 'styled-components';
 // eslint-disable-next-line no-unused-vars
 import PropTypes from 'prop-types';
 import UserAvatar from './UserAvatar';
+
 //Picture Profile Settings
 export default function ProfilePictureSettings() {
   const inputRef = useRef(null);

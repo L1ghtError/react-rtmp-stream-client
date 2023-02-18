@@ -1,5 +1,6 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import userSlice from './UserStore.js';
+import userSlice from './UserSlice.js';
+import streamSlice from './StreamSlice.js';
 import {
   persistStore,
   persistReducer,
@@ -12,9 +13,10 @@ import {
 } from 'redux-persist';
 
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-const rootReducer = combineReducers({ userSlice: userSlice });
+const rootReducer = combineReducers({ userSlice: userSlice, streamSlice: streamSlice });
 const persistConfig = {
   key: 'root',
+  blacklist: ['streamSlice'],
   storage
 };
 

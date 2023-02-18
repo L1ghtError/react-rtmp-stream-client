@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import { useState, useEffect } from 'react';
-import { selectUserAvatar } from '../../store/UserStore';
+import { selectUserAvatar } from '../../store/UserSlice';
 import { useSelector } from 'react-redux';
 import userAvatar from '../../assets/Blackbox.png';
 import PropTypes from 'prop-types';

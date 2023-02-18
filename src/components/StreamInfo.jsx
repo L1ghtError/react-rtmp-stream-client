@@ -1,23 +1,20 @@
 //import { useState } from 'react';
 import styled from 'styled-components';
-
+import { useSelector } from 'react-redux';
+import { selectUserInfo } from '../store/UserSlice.js';
 import settingButtonLogo from '../assets/SettingButton.svg';
 import UserAvatar from './micro-components/UserAvatar';
 
 function StreamInfo() {
-  const toggleVideoPlay = new Event('toggleVideoPlay');
+  const userInfo = useSelector(selectUserInfo);
   return (
     <StreamInfoStyled>
       <section>
         <UserAvatar></UserAvatar>
-        <p id="user-name">{'Young thug '}</p>
-        <p id="stream-name"> | My stream</p>
-        <button
-          onClick={() => {
-            document.dispatchEvent(toggleVideoPlay);
-          }}>
-          Toggle wideo player
-        </button>
+        <p id="user-name">
+          {userInfo.userName != '' ? userInfo.userName : `please specify user name`}
+        </p>
+        <p id="stream-name"> | {userInfo.streamName}</p>
       </section>
       <section>
         <div id="settings-button-logo-wrapper">
@@ -70,7 +67,7 @@ const StreamInfoStyled = styled.div`
     width: 1.6rem;
     height: 1.6rem;
     border-radius: 5px 5px 5px 5px;
-
+    transition: background-color 0.25s;
     margin-right: 20px;
   }
   #settings-button-logo-wrapper:hover {
