@@ -64,6 +64,9 @@ const UserAvatarStyled = styled.div`
   }
 
   #user-avatar {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none;
     width: 90%;
     height: 90%;
     border-radius: 100px 100px 100px 100px;

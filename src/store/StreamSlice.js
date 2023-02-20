@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  isLive: 0
+  isLive: 0,
+  soundVolume: 50
 };
 const streamSlice = createSlice({
   name: 'stream-state',
@@ -9,9 +10,13 @@ const streamSlice = createSlice({
   reducers: {
     setLiveProperty: (state, action) => {
       state.isLive = action.payload;
+    },
+    setSoundVolume: (state, action) => {
+      state.soundVolume = action.payload;
     }
   }
 });
 export default streamSlice.reducer;
-export const selectIsLive = (state) => state.userSlice.isLive;
-export const { setLiveProperty } = streamSlice.actions;
+export const selectIsLive = (state) => state.streamSlice.isLive;
+export const selectSoundVolume = (state) => state.streamSlice.soundVolume;
+export const { setLiveProperty, setSoundVolume } = streamSlice.actions;

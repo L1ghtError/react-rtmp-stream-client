@@ -5,43 +5,80 @@ import PlayButtonSvg from '../assets/PlayButton.svg';
 import PauseButtonSvg from '../assets/PauseButton.svg';
 import SpeakerIcon from '../assets/Speaker_Icon.svg';
 import FullScreenIcon from '../assets/FullScreen.svg';
+import FullScreenExitIcon from '../assets/FullScreenExit.svg';
 import flv from 'flv.js';
 import { useState } from 'react';
 import { selectUserInfo } from '../store/UserSlice.js';
-import { selectIsLive, setLiveProperty } from '../store/StreamSlice';
+import { selectSoundVolume, setLiveProperty, setSoundVolume } from '../store/StreamSlice';
+import { selectFullScreenProperty, setFullScreenProperty } from '../store/StreamSliceNotPersisted';
+
+function launchIntoFullscreen(element) {
+  if (element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen();
+  } else if (element.msRequestFullscreen) {
+    element.msRequestFullscreen();
+  } else {
+    element.classList.toggle('fullscreen');
+  }
+}
 
 function VideoPlayer() {
   const dispatch = useDispatch();
-  const [isPlaying, setIsPlaying] = useState(0);
-  const [soundVolume, setSoundVolume] = useState(0);
-  let flvPlayer = useRef(null);
-  const [isSoundHovered, setSounHover] = useState(0);
-  const isLive = useRef(0);
-  const videoPlayerRef = useRef(0);
+  let soundVolumeRedux = useSelector(selectSoundVolume);
+  let isFullScreen = useSelector(selectFullScreenProperty);
   let userInfo = useSelector(selectUserInfo);
+  let flvPlayer = useRef(null);
+  const loadTimeout = useRef(0);
+  let fullscreenElement = useRef(
+    document.fullscreenElement ||
+      document.mozFullScreenElement ||
+      document.webkitFullscreenElement ||
+      document.msFullscreenElement
+  );
+  const videoPlayerRef = useRef(0);
+  const videoRef = useRef(0);
+  const pauseElapsedTime = useRef(0);
+  const [isPlaying, setIsPlaying] = useState(0);
+  const [isSoundHovered, setSounHover] = useState(0);
+
   const [isVPlayerHovered, setVPlayerMousePosition] = useState(0);
 
-  const loadTimeout = useRef(0);
-  const pauseElapsedTime = useRef(0);
   useEffect(() => {
+    document.addEventListener('fullscreenchange', fullscreenchanged);
     flvPlayer.current = flv.createPlayer({
       type: 'flv',
       url: `http://localhost:8000/live/${userInfo.userStreamKey}.flv`,
       isLive: true
     }); //TODO: remove logging
     dispatch(setLiveProperty(flvPlayer.current._mediaInfo != null));
-    flvPlayer.current.attachMediaElement(videoPlayerRef.current);
+    flvPlayer.current.attachMediaElement(videoRef.current);
     flvPlayer.current.load();
-
     return () => {
       flvPlayer.current.unload();
       flvPlayer.current.detachMediaElement();
+      // document.removeEventListener(
+      //   'keydown',
+      //   (event) => {
+      //     if (event.key == 'Escape') {
+      //       dispatch(setFullScreenProperty(0));
+      //     }
+      //   },
+      //   false
+      // );
     };
   }, []);
+  useEffect(() => {
+    videoRef.current.volume = soundVolumeRedux / 100;
+  }, [soundVolumeRedux]);
   const handlePlayButtonClick = (e) => {
     e.stopPropagation();
+
     dispatch(setLiveProperty(flvPlayer.current._mediaInfo != null));
-    console.log(videoPlayerRef.current);
+
     if (isPlaying) {
       flvPlayer.current.pause();
       loadTimeout.current = setInterval(() => {
@@ -58,7 +95,7 @@ function VideoPlayer() {
     } else {
       clearInterval(loadTimeout.current);
       if (pauseElapsedTime.current >= 5000) {
-        flvPlayer.current.attachMediaElement(videoPlayerRef.current);
+        flvPlayer.current.attachMediaElement(videoRef.current);
         flvPlayer.current.load();
         pauseElapsedTime.current = 0;
       }
@@ -66,19 +103,64 @@ function VideoPlayer() {
       setIsPlaying(1);
     }
   };
-  const handleVolumeInputChange = (e) => {
-    // videoPlayerRef.current[0].volume = e.target.value;
-    setSoundVolume(e.target.value);
+  const fullscreenchanged = (event) => {
+    // document.fullscreenElement will point to the element that
+    // is in fullscreen mode if there is one. If not, the value
+    // of the property is null.
+    if (document.fullscreenElement) {
+      dispatch(setFullScreenProperty(1));
+    } else {
+      dispatch(setFullScreenProperty(0));
+    }
   };
+  const handleVolumeInputChange = (e) => {
+    // videoRef.current[0].volume = e.target.value;
+    dispatch(setSoundVolume(e.target.value));
+    //setSoundVolume(e.target.value);
+  };
+  const handleFullScreenClick = (e) => {
+    e.stopPropagation();
+    fullscreenElement.current =
+      document.fullscreenElement ||
+      document.mozFullScreenElement ||
+      document.webkitFullscreenElement ||
+      document.msFullscreenElement;
+
+    if (fullscreenElement.current) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    } else {
+      launchIntoFullscreen(videoPlayerRef.current);
+      dispatch(setFullScreenProperty(1));
+
+      // document.addEventListener(
+      //   'keydown',
+      //   (event) => {
+      //     if (event.key == 'Escape') {
+      //       console.log('eyeyey');
+      //       dispatch(setFullScreenProperty(0));
+      //     }
+      //   },
+      //   false
+      // );
+    }
+  };
+
   return (
     <VideoPlayerStyled
       onMouseEnter={() => setVPlayerMousePosition(1)}
-      onMouseLeave={() => setVPlayerMousePosition(0)}>
+      onMouseLeave={() => setVPlayerMousePosition(0)}
+      ref={videoPlayerRef}>
       <video
-        volume={soundVolume}
         id="videoElement"
         onClick={handlePlayButtonClick}
-        ref={videoPlayerRef}></video>
+        onDoubleClick={handleFullScreenClick}
+        ref={videoRef}></video>
       {userInfo.userStreamKey === '' && <div id="user-key-warning">Specify Stream Key</div>}
       {isVPlayerHovered == 1 && (
         <div id="video-player-interface">
@@ -100,7 +182,7 @@ function VideoPlayer() {
               {isSoundHovered == 1 && (
                 <input
                   onChange={handleVolumeInputChange}
-                  value={soundVolume}
+                  value={soundVolumeRedux}
                   type={'range'}
                   min="0"
                   max="100"
@@ -109,8 +191,12 @@ function VideoPlayer() {
             </div>
           </div>
           <div className="player-separator">
-            <button>
-              <img height={25} src={FullScreenIcon} alt="play" />
+            <button onClick={handleFullScreenClick}>
+              <img
+                height={25}
+                src={isFullScreen ? FullScreenExitIcon : FullScreenIcon}
+                alt="play"
+              />
             </button>
           </div>
         </div>
@@ -123,8 +209,9 @@ function VideoPlayer() {
 const VideoPlayerStyled = styled.div`
   display: flex;
   margin-top: 4rem;
-  justify-content: center;
+  justify-content: start;
   box-shadow: 0px 0px 40px -20px black;
+  position: relative;
   .player-separator {
     display: flex;
     align-items: center;
@@ -132,7 +219,10 @@ const VideoPlayerStyled = styled.div`
   & input[type='range'] {
     background: #44444d;
   }
-
+  #audio-params {
+    display: flex;
+    align-items: center;
+  }
   input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;
     height: 20px;
@@ -153,10 +243,12 @@ const VideoPlayerStyled = styled.div`
   }
   #video-player-interface {
     display: flex;
-    width: 50rem;
+    position: absolute;
+    //width: 1000px;
+    width: 100%;
     background: linear-gradient(rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.4));
     align-self: flex-end;
-    position: absolute;
+    padding-bottom: 0.4rem;
     justify-content: space-between;
     transition: background 0.25s;
     z-index: 1;

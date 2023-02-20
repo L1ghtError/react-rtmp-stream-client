@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import userSlice from './UserSlice.js';
 import streamSlice from './StreamSlice.js';
+import StreamSliceNotPersisted from './StreamSliceNotPersisted.js';
 import {
   persistStore,
   persistReducer,
@@ -13,10 +14,14 @@ import {
 } from 'redux-persist';
 
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-const rootReducer = combineReducers({ userSlice: userSlice, streamSlice: streamSlice });
+const rootReducer = combineReducers({
+  userSlice: userSlice,
+  streamSlice: streamSlice,
+  StreamSliceNotPersisted: StreamSliceNotPersisted
+});
 const persistConfig = {
   key: 'root',
-  blacklist: ['streamSlice'],
+  blacklist: ['StreamSliceNotPersisted'], // if you whant to stop persisting some slice, specify this blacklist: ['streamSlice']
   storage
 };
 

@@ -65,6 +65,7 @@ const AppHeaderStyled = styled.div`
     margin-left: 20px;
   }
   & button {
+    background-color: #222226;
     color: #f1e4e4;
     margin-right: 20px;
   }
