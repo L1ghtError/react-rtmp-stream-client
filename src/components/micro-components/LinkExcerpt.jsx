@@ -23,7 +23,9 @@ export function LinkExcerpt({ userLink }) {
       return false;
     }
 
-    changeUserLink({ old: userLink, new: { linkTitle: userLinkTitle, linkURL: userLinkURL } });
+    dispatch(
+      changeUserLink({ old: userLink, new: { linkTitle: userLinkTitle, linkURL: userLinkURL } })
+    );
     setEditingParam(0);
   };
   const handleDeleteLink = () => {
