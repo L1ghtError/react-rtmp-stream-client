@@ -1,28 +1,35 @@
 import { useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { setUserPhotoThunk } from '../../store/UserSlice';
 // eslint-disable-next-line no-unused-vars
 import styled, { keyframes } from 'styled-components';
 // eslint-disable-next-line no-unused-vars
 import PropTypes from 'prop-types';
 import UserAvatar from './UserAvatar';
+
 //Picture Profile Settings
 export default function ProfilePictureSettings() {
   const inputRef = useRef(null);
+  const dispatch = useDispatch();
+
   const handleInputChange = (e) => {
-    console.log(inputRef.current.files);
-    Event.preventDefault();
+    if (inputRef.current.files.length === 1) {
+      dispatch(setUserPhotoThunk(inputRef.current.files[0]));
+      e.preventDefault();
+    }
   };
+
   return (
     <ProfilePictureSettingsStyled>
       <UserAvatar photoSize={5}></UserAvatar>
       <div>
         <button>
           <label htmlFor="load-picture-input">Load Profile Picture</label>
-
           <input
             onChange={handleInputChange}
             id="load-picture-input"
             name="load-picture-input"
-            accept=".jpg, .jpeg, .png"
+            accept=".jpg, .jpeg, .png, .gif"
             ref={inputRef}
             type={'file'}></input>
         </button>

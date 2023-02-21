@@ -1,5 +1,7 @@
 //import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { selectUserInfo } from '../store/UserSlice.js';
 import AdditionalInfoUserLinks from './AdditionalInfoUserLinks';
 
 const AdditionalInfoStyled = styled.div`
@@ -28,12 +30,17 @@ const AdditionalInfoStyled = styled.div`
 `;
 
 function AdditionalInfo() {
+  const userInfo = useSelector(selectUserInfo);
   return (
     <AdditionalInfoStyled>
       <section>
         <div className="info-block-container">
           <span className="info-block-header">Information: </span>
-          <span>Light3rrxr</span>
+          {userInfo.userName != '' ? (
+            <span>{userInfo.userName}</span>
+          ) : (
+            <span>Specify user name</span>
+          )}
         </div>
         <div className="info-block-container">
           <span className="info-block-header">Status: </span>

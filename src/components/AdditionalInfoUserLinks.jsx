@@ -1,15 +1,12 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectUserLinks } from '../store/UserSlice';
+import { getAvalibleSMSvgByURL } from '../scripts/getAvalibleSMSvgByURL';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import facebookIcon from '../assets/SocialMediaSVGS/facebook-icon.svg';
-import instagramIcon from '../assets/SocialMediaSVGS/instagram-icon.svg';
-import linktreeIcon from '../assets/SocialMediaSVGS/linktree-icon.svg';
-import telegramIcon from '../assets/SocialMediaSVGS/telegram-icon.svg';
 import decorateArrow from '../assets/decorate-arrow.svg';
-// eslint-disable-next-line no-unused-vars
-import linkIcon from '../assets/link-icon.svg';
 
-let PostExcerpt = ({ imageSrc, linkText }) => {
+let PostExcerpt = ({ imageSrc, linkText, linkURL }) => {
   let [isHovered, setisHovered] = useState(0);
   return (
     <div
@@ -21,7 +18,9 @@ let PostExcerpt = ({ imageSrc, linkText }) => {
       }}
       className="link-wrapper">
       <img className="user-media-img" src={imageSrc} alt="Logo"></img>
-      <a className="user-media-text">{linkText}</a>
+      <a href={linkURL} className="user-media-text">
+        {linkText}
+      </a>
       <img src={decorateArrow} className="decorate-arrow" style={{ opacity: isHovered }}></img>
     </div>
   );
@@ -29,17 +28,25 @@ let PostExcerpt = ({ imageSrc, linkText }) => {
 
 PostExcerpt.propTypes = {
   imageSrc: PropTypes.string,
-  linkText: PropTypes.string
+  linkText: PropTypes.string,
+  linkURL: PropTypes.string
 };
 
 function AdditionalInfoUserLinks() {
+  let links = useSelector(selectUserLinks);
   return (
     <AdditionalInfoUserLinksStyled>
       <div id="links-wrapper">
-        <PostExcerpt imageSrc={instagramIcon} linkText={'instagram'}></PostExcerpt>
-        <PostExcerpt imageSrc={facebookIcon} linkText={'facebook'}></PostExcerpt>
-        <PostExcerpt imageSrc={linktreeIcon} linkText={'linktree'}></PostExcerpt>
-        <PostExcerpt imageSrc={telegramIcon} linkText={'telegram'}></PostExcerpt>
+        {links.map((e) => {
+          if (e.linkURL != '')
+            return (
+              <PostExcerpt
+                key={e.linkURL}
+                imageSrc={getAvalibleSMSvgByURL(e.linkURL)}
+                linkText={e.linkTitle}
+                linkURL={e.linkURL}></PostExcerpt>
+            );
+        })}
       </div>
     </AdditionalInfoUserLinksStyled>
   );

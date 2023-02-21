@@ -1,12 +1,22 @@
 import styled, { keyframes } from 'styled-components';
+import { useState, useEffect } from 'react';
+import { selectUserAvatar } from '../../store/UserSlice';
+import { useSelector } from 'react-redux';
 import userAvatar from '../../assets/Blackbox.png';
 import PropTypes from 'prop-types';
 function UserAvatar({ photoSize }) {
+  const [userPhoto, setUserPhoto] = useState(null);
+  const selectedUserPhoto = useSelector(selectUserAvatar);
+  useEffect(() => {
+    if (selectedUserPhoto) {
+      setUserPhoto(selectedUserPhoto);
+    }
+  }, [selectedUserPhoto]);
   return (
     <UserAvatarStyled id="user-avatar-component" photoSize={photoSize}>
       <div id="avatar-background">
         {/* TODO: implement background size increase on hover */}
-        <img id="user-avatar" src={userAvatar} alt="Logo"></img>
+        <img id="user-avatar" src={userPhoto ? userPhoto : userAvatar} alt="Logo"></img>
       </div>
     </UserAvatarStyled>
   );
@@ -54,7 +64,11 @@ const UserAvatarStyled = styled.div`
   }
 
   #user-avatar {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none;
     width: 90%;
+    height: 90%;
     border-radius: 100px 100px 100px 100px;
   }
 
