@@ -103,7 +103,7 @@ function VideoPlayer() {
       setIsPlaying(1);
     }
   };
-  const fullscreenchanged = (event) => {
+  const fullscreenchanged = () => {
     // document.fullscreenElement will point to the element that
     // is in fullscreen mode if there is one. If not, the value
     // of the property is null.
@@ -209,7 +209,7 @@ function VideoPlayer() {
 const VideoPlayerStyled = styled.div`
   display: flex;
   margin-top: 4rem;
-  justify-content: start;
+  justify-content: center;
   box-shadow: 0px 0px 40px -20px black;
   position: relative;
   .player-separator {

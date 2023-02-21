@@ -6,7 +6,7 @@ import twitchIcon from '../../assets/SocialMediaSVGS/twitch-icon.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserInfo as reduxSetUserInfo, selectUserInfo } from '../../store/UserSlice';
 import { useImmer } from 'use-immer';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 //Picture Profile Settings
 export default function ProfileSettingsCard() {
   const dispatch = useDispatch();
@@ -16,18 +16,29 @@ export default function ProfileSettingsCard() {
     userStreamKey: '',
     userColorTheme: '#535bf2'
   });
+  //const [isAllFieldsSame, setIsAllFieldsSame] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isDisplayStreamKey, setDisplayStreamKey] = useState(0);
-  let posts = useSelector(selectUserInfo);
+  let reduxUserInfo = useSelector(selectUserInfo);
+  let submitRef = useRef(0);
   useEffect(() => {
-    setUserInfo(posts);
+    setUserInfo(reduxUserInfo);
   }, []);
   const handleUserNameChange = (e) => {
     setUserInfo((draft) => {
       draft.userName = e.target.value;
     });
   };
-
+  const compareLocalAndGlobalState = () => {
+    let isAllFieldsSame = 1;
+    const userInfoNames = Object.keys(userInfo);
+    userInfoNames.forEach((e) => {
+      if (userInfo[e] != reduxUserInfo[e]) {
+        isAllFieldsSame = 0;
+      }
+    });
+    return isAllFieldsSame;
+  };
   const handleUserColorThemeChange = (e) => {
     setUserInfo((draft) => {
       draft.userColorTheme = e.target.value;
@@ -56,7 +67,8 @@ export default function ProfileSettingsCard() {
     }
   };
   const handleSubmit = (userInfo) => {
-    //Im know about "Formik" and "react Forms"
+    //should i migrate to "Formik" or "react Forms"?
+    console.log('click handled');
     let isInvalidParamFound = 0;
     let errorMessage = '';
     Object.entries(userInfo).forEach((e) => {
@@ -168,7 +180,17 @@ export default function ProfileSettingsCard() {
           ) : (
             <div></div>
           )}
-          <button onClick={() => handleSubmit(userInfo)}>Save changes</button>
+          <button
+            onClick={() => handleSubmit(userInfo)}
+            ref={submitRef}
+            disabled={compareLocalAndGlobalState()}
+            style={
+              compareLocalAndGlobalState()
+                ? { backgroundColor: '#828497', cursor: 'unset' }
+                : { backgroundColor: '#c3c6e2' }
+            }>
+            Save changes
+          </button>
         </div>
       </ProfileSettingsCardStyled>
     </>
@@ -185,9 +207,7 @@ const ProfileSettingsCardStyled = styled.div`
 
   border-radius: 7px;
   background-color: #242424;
-
-  margin-bottom: 20px;
-
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   .card-settings-wrapper {
     display: flex;
     flex-direction: column;
@@ -255,7 +275,7 @@ const ProfileSettingsCardStyled = styled.div`
     display: inline-block;
     background: #44444d;
     border-radius: 5px;
-    margin: 0rem 2rem 1rem 1.4rem;
+    margin: 0rem 1rem 1rem 1.4rem;
     padding: 0.4rem 1rem 0.4rem 1rem;
     font-size: 0.7rem;
     width: 70%;

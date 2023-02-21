@@ -7,7 +7,6 @@ import linktreeIcon from '../assets/SocialMediaSVGS/linktree-icon.svg';
 import telegramIcon from '../assets/SocialMediaSVGS/telegram-icon.svg';
 import decorateArrow from '../assets/decorate-arrow.svg';
 // eslint-disable-next-line no-unused-vars
-import linkIcon from '../assets/link-icon.svg';
 
 let PostExcerpt = ({ imageSrc, linkText }) => {
   let [isHovered, setisHovered] = useState(0);

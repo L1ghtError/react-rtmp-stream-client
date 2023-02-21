@@ -16,6 +16,7 @@ export const setUserPhotoThunk = createAsyncThunk('user/readDataUrl', async (ima
 });
 
 const initialState = {
+  userLinks: new Array(5).fill({ linkTitle: '', linkURL: '' }),
   userAvatar: '',
   userInfo: {
     userName: '',
@@ -31,6 +32,35 @@ const userSlice = createSlice({
   reducers: {
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
+    },
+    addNewUserLink: (state, action) => {
+      state.userLinks.every((v, i) => {
+        if (v.linkURL == '') {
+          state.userLinks[i] = action.payload;
+
+          return false;
+        }
+        return true;
+      });
+    },
+    deleteUserLinkByURL: (state, action) => {
+      state.userLinks.every((v, i) => {
+        if (v.linkURL == action.payload) {
+          state.userLinks[i].linkTitle = '';
+          state.userLinks[i].linkURL = '';
+          return false;
+        }
+        return true;
+      });
+    },
+    changeUserLink: (state, action) => {
+      state.userLinks.every((v, i) => {
+        if (v.linkURL == action.payload.old.linkURL) {
+          state.userLinks[i] = action.payload.new;
+          return false;
+        }
+        return true;
+      });
     }
   },
   extraReducers(builder) {
@@ -42,7 +72,9 @@ const userSlice = createSlice({
 
 export default userSlice.reducer;
 export const selectUserInfo = (state) => state.userSlice.userInfo;
+export const selectUserLinks = (state) => state.userSlice.userLinks;
 export const selectUserAvatar = (state) => {
   return state.userSlice.userAvatar;
 };
-export const { setUserInfo } = userSlice.actions;
+export const { setUserInfo, addNewUserLink, deleteUserLinkByURL, changeUserLink } =
+  userSlice.actions;
