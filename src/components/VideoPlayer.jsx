@@ -75,6 +75,7 @@ function VideoPlayer() {
     videoRef.current.volume = soundVolumeRedux / 100;
   }, [soundVolumeRedux]);
   const handlePlayButtonClick = (e) => {
+    console.log(flvPlayer.current);
     e.stopPropagation();
 
     dispatch(setLiveProperty(flvPlayer.current._mediaInfo != null));
@@ -162,6 +163,11 @@ function VideoPlayer() {
         onDoubleClick={handleFullScreenClick}
         ref={videoRef}></video>
       {userInfo.userStreamKey === '' && <div id="user-key-warning">Specify Stream Key</div>}
+      {flvPlayer.current != null &&
+        userInfo.userStreamKey != '' &&
+        flvPlayer.current._mediaInfo === null && (
+          <div id="user-key-warning">No stream detected</div>
+        )}
       {isVPlayerHovered == 1 && (
         <div id="video-player-interface">
           <div className="player-separator">
